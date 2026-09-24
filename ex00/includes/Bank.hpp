@@ -4,11 +4,33 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include "../includes/Account.hpp"
 
 
 class Bank
 {
+	public:
+		class Account
+		{
+			friend class Bank;
+
+			private:
+			int _id;
+			int _value;
+			int _debt;
+
+			explicit Account(int id);
+			~Account();
+
+			Account(const Account&);
+			Account& operator=(const Account&);
+
+			public:
+			const int& getId() const;
+			const int& getValue() const;
+			const int& getDebt() const;
+
+			friend std::ostream& operator<<(std::ostream& os, const Account& account);
+		};
 	private:
 		typedef std::map<int, Account*> AccountMap;
 
@@ -21,15 +43,16 @@ class Bank
 		Bank(const Bank&);
 		Bank& operator=(const Bank&);
 
-		Account& findAccount(int id);
 		static void checkPositive(int amount);
 
 	public:
 		explicit Bank(int initialLiquidity = 0);
-		~Bank() = default;
+		~Bank();
+
+		Account& operator[](int id);
+		const Account& operator[](int id) const;
 
 		const int& getLiquidity() const;
-		const Account& getAccount(int id) const;
 
 		int createAccount();
 		void deleteAccount(int id);
@@ -40,5 +63,8 @@ class Bank
 		void giveLoan(int id, int amount);
 		void repayLoan(int id, int amount);
 
+
 		friend std::ostream& operator<<(std::ostream& os, const Bank& bank);
 };
+
+
